@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜡烛火焰效果</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body{
+            background-color: #FBFFF8;
+        }
+        #candle-flame {
+            position: absolute;
+            top: 300px; /* 调整这个值来对齐火焰和蜡烛的位置 */
+            left: 300px;
+            transform: translate(-50%, -50%);
+  
+            z-index: 999;
+        }
+        #candle-image {
+            position: relative;
+            display: block;
+            top:266px;
+            left:278px;
+            width: 30px; /* 调整蜡烛图像的大小 */
+        }
+    </style>
+</head>
+<body>
+    <img id="candle-image" src="candle.png" alt="Candle"> <!-- 替换为您的蜡烛图像路径 -->
+    <div id="candle-flame"></div>
+    <script>
+        let particles = [];
+      
+        function setup() {
+          let canvas = createCanvas(200, 200);
+          canvas.parent('candle-flame');
+          
+        }
+      
+        function draw() {
+          clear();
+      
+          for (let i = 0; i < 8; i++) { // 增加每次生成的粒子数量
+            let p = new Particle(width / 2, 80); // 粒子的初始位置稍微调低
+            particles.push(p);
+          }
+      
+          for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update();
+            particles[i].show();
+            if (particles[i].finished()) {
+              particles.splice(i, 1);
+            }
+          }
+        }
+      
+        class Particle {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.vx = random(-0.5, 0.5); // 稍微增加水平运动的范围
+            this.vy = random(-1.5, -0.8); // 增加垂直运动的速度
+            this.alpha = 150;
+            this.size = random(6, 8); // 增加粒子的初始大小
+            this.color = [255, random(150, 200), 0];
+          }
+      
+          finished() {
+            return this.alpha < 0;
+          }
+      
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= 4;
+            this.size *= 0.86;
+            if (this.alpha < 150) {
+              this.color = [255, random(200, 255), random(100, 150)];
+            }
+          }
+      
+          show() {
+            noStroke();
+            fill(this.color[0], this.color[1], this.color[2], this.alpha);
+            ellipse(this.x, this.y, this.size);
+          }
+        }
+      </script>
+      
+</body>
+</html>
